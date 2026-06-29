@@ -9,6 +9,51 @@ const MOODS = [
   { value: 'struggling', icon: <Frown className="w-6 h-6" />, label: 'Struggling', color: 'text-red-400' },
 ];
 
+  function InputList({
+    field,
+    placeholder,
+    formData,
+    updateField,
+    removeField,
+    addField,
+  }) {
+    return (
+      <div className="space-y-2">
+        {formData[field].map((value, index) => (
+          <div key={index} className="flex gap-2">
+            <input
+              type="text"
+              value={value}
+              onChange={(e) =>
+                updateField(field, index, e.target.value)
+              }
+              placeholder={placeholder}
+              className="input-field flex-1"
+            />
+
+            {formData[field].length > 1 && (
+              <button
+                type="button"
+                onClick={() => removeField(field, index)}
+                className="px-3 py-2 text-slate-400 hover:text-red-400 hover:bg-slate-700 rounded transition-colors"
+              >
+                &times;
+              </button>
+            )}
+
+            <button
+              type="button"
+              onClick={() => addField(field, index)}
+              className="px-3 py-2 text-slate-400 hover:text-primary-400 hover:bg-slate-700 rounded transition-colors"
+            >
+              <Plus className="w-4 h-4" />
+            </button>
+          </div>
+        ))}
+      </div>
+    );
+  }
+
 export function DailyLogManager({ logs, onDataRefresh }) {
   const [showForm, setShowForm] = useState(false);
   const [selectedLog, setSelectedLog] = useState(null);
@@ -72,37 +117,7 @@ export function DailyLogManager({ logs, onDataRefresh }) {
     setFormData({ ...formData, [field]: arr });
   };
 
-  const InputList = ({ field, placeholder }) => (
-    <div className="space-y-2">
-      {formData[field].map((value, index) => (
-        <div key={index} className="flex gap-2">
-          <input
-            type="text"
-            value={value}
-            onChange={(e) => updateField(field, index, e.target.value)}
-            placeholder={placeholder}
-            className="input-field flex-1"
-          />
-          {formData[field].length > 1 && (
-            <button
-              type="button"
-              onClick={() => removeField(field, index)}
-              className="px-3 py-2 text-slate-400 hover:text-red-400 hover:bg-slate-700 rounded transition-colors"
-            >
-              &times;
-            </button>
-          )}
-          <button
-            type="button"
-            onClick={() => addField(field, index)}
-            className="px-3 py-2 text-slate-400 hover:text-primary-400 hover:bg-slate-700 rounded transition-colors"
-          >
-            <Plus className="w-4 h-4" />
-          </button>
-        </div>
-      ))}
-    </div>
-  );
+
 
   return (
     <div className="space-y-6">
@@ -151,25 +166,33 @@ export function DailyLogManager({ logs, onDataRefresh }) {
               </div>
             </div>
 
-            <div>
-              <label className="block text-sm font-medium text-slate-300 mb-2 text-accent-400">Accomplishments</label>
-              <InputList field="accomplishments" placeholder="What did you achieve today?" />
-            </div>
 
-            <div>
-              <label className="block text-sm font-medium text-slate-300 mb-2 text-red-400">Challenges</label>
-              <InputList field="challenges" placeholder="Any blockers or difficulties?" />
-            </div>
+            <InputList
+              field="accomplishments"
+              placeholder="Accomplishments?"
+              formData={formData}
+              updateField={updateField}
+              removeField={removeField}
+              addField={addField}
+            />
+            
+            <InputList
+              field="challenges"
+              placeholder="Any blockers or difficulties?"
+              formData={formData}
+              updateField={updateField}
+              removeField={removeField}
+              addField={addField}
+            />
 
-            <div>
-              <label className="block text-sm font-medium text-slate-300 mb-2 text-primary-400">Learnings</label>
-              <InputList field="learnings" placeholder="What did you learn today?" />
-            </div>
-
-            <div>
-              <label className="block text-sm font-medium text-slate-300 mb-2 text-warm-400">Tomorrow's Goals</label>
-              <InputList field="tomorrow" placeholder="What's on deck for tomorrow?" />
-            </div>
+            <InputList
+              field="learnings"
+              placeholder="What did you learn today?"
+              formData={formData}
+              updateField={updateField}
+              removeField={removeField}
+              addField={addField}
+            />
 
             <div className="flex gap-3">
               <button type="submit" className="btn-primary">Save Log</button>
