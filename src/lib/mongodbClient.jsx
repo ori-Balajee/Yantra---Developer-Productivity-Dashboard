@@ -99,7 +99,7 @@ export const mongoClient = {
     // === Stats ===
     async getStats() {
         const sessionsRes = await apiRequest('/sessions/stats');
-        return sessionsRes.total || {
+        return sessionsRes || {
             totalHoursThisWeek: 0,
             totalHoursThisMonth: 0,
             sessionsThisWeek: 0,

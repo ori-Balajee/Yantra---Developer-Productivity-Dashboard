@@ -52,6 +52,7 @@ router.get('/stats', async (req, res) => {
     startDate.setDate(startDate.getDate() - parseInt(days));
     startDate.setHours(0, 0, 0, 0);
 
+
     const match = {
       startTime: { $gte: startDate },
       endTime: { $ne: null },
@@ -75,6 +76,22 @@ router.get('/stats', async (req, res) => {
       },
       { $sort: { _id: 1 } },
     ]);
+
+    const streakDays = new Set(
+      dailyStats.map(d => d._id)
+    );
+    let streak = 0;
+    const current = new Date();
+    while(true){
+      const day = current.toISOString().split('T')[0];
+
+      if(streakDays.has(day)){
+        streak++;
+        current.setDate(current.getDate()-1);
+      }else{
+        break;
+      }
+    }
 
     // Project breakdown
     const projectStats = await Session.aggregate([
@@ -122,6 +139,7 @@ router.get('/stats', async (req, res) => {
         sessions: overall.sessionCount,
         avgSessionHours: Math.round((overall.avgDuration / 3600) * 10) / 10,
       },
+      streak
     });
   } catch (error) {
     console.error('Error fetching session stats:', error);
