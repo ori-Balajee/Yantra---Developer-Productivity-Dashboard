@@ -88,8 +88,7 @@ app.use((err, req, res, next) => {
 app.listen(PORT, () => {
   console.log(`\n🚀 DevPulse API Server running`);
   console.log(`📍 http://localhost:${PORT}`);
-  console.log(`📡 API: http://localhost:${PORT}/api`);
-  console.log(`💚 Health: http://localhost:${PORT}/api/health\n`);
+  console.log(`📡 API: ${process.env.FRONTEND_URL}/api`);
 });
 
 export default app;
